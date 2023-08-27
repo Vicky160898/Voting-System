@@ -1,0 +1,28 @@
+/* Change the background color to green */
+.Toastify__toast--success {
+  background-color: #04aa6d !important;
+}
+
+/* Change the text color to white */
+.Toastify__toast-body {
+  color: white !important;
+  /* Display text in a horizontal line */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+/* Style the cancel (close) button */
+.Toastify__close-button {
+  width: 10%;
+  color: white !important; /* Change the color of the icon */
+  font-size: 18px; /* Adjust the size of the icon */
+  margin-left: auto; /* Push the icon to the right */
+  margin-right: 10px; /* Add some space between the text and the icon */
+  margin-top: 10px;
+}
+
+/* Change the color of the progress bar to white */
+.Toastify__progress-bar {
+  background-color: white !important;
+}
