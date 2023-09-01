@@ -7,13 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { useVoterAuth } from "../components/store/VoterAuthContext";
 function Login() {
   const { authenticateVoter, voterId } = useVoterAuth();
-  const [ID, setID] = useState("");
+  const [voterid, setID] = useState("");
   const navigate = useNavigate();
-  const showToast = async () => {
-    const response = await axios.post("http://localhost:8080/api/login", {
-      ID: ID,
+  const Loginhandler = async () => {
+    const response = await axios.post(`http://localhost:8080/api/login`, {
+      ID: voterid,
     });
     console.log("res", response);
+    authenticateVoter(response.data.data.voterID);
     if (response.data.isAdmin) {
       localStorage.setItem("isAdmin", true);
       Toast("Admin login Successfully");
@@ -29,10 +30,9 @@ function Login() {
     }
   };
 
-  const showVoter = async () => {
+  const VoterIDhandler = async () => {
     const response = await axios.get("http://localhost:8080/api/create");
-    console.log(response.data.voterID);
-    authenticateVoter(response.data.voterID);
+    setID(response.data.data.voterID);
     Toast("Voter ID Generated Successfully");
   };
 
@@ -47,7 +47,7 @@ function Login() {
           <p>
             <input
               type="text"
-              value={voterId}
+              value={voterid}
               onChange={(e) => setID(e.target.value)}
               placeholder="Enter Voter ID"
             />
@@ -55,11 +55,11 @@ function Login() {
           <button
             style={{ marginBottom: "15px" }}
             className={style.btn}
-            onClick={showVoter}
+            onClick={VoterIDhandler}
           >
             Create Voter Id
           </button>
-          <button className={style.btn} onClick={showToast}>
+          <button className={style.btn} onClick={Loginhandler}>
             Log in
           </button>
         </div>

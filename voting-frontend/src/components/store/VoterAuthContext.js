@@ -20,6 +20,7 @@ export const VoterAuthProvider = ({ children }) => {
     setVoterHasVoted(true);
   };
 
+
   // Provide the context values to children components
   return (
     <VoterAuthContext.Provider

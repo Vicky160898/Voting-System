@@ -3,10 +3,29 @@
   padding: 0px;
   text-decoration: none;
 }
+
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 300px;
-  margin: 30px auto;
-  text-align: center;
-  font-family: arial;
+  border-radius: 10px;
+  padding: 15px;
+  max-width: 650px;
+  margin: 40px auto;
+  background-color: aqua;
+}
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  background-color: aqua;
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.resultItem {
+  font-size: "16px";
+  margin-bottom: "5px";
+  margin-right: 20px;
+  padding: 10px;
 }

@@ -5,29 +5,35 @@
 }
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 300px;
+  max-width:60%;
   margin: auto;
   text-align: center;
   font-family: arial;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: gray;
 }
 
 .title {
-  color: grey;
-  font-size: 18px;
+  color: #ffffff;
+  font-size:20px;
   margin: 10px 0px;
 }
 
 button {
   border: none;
+  width: 150px;
   outline: 0;
   display: inline-block;
   padding: 10px;
-  color: white;
-  background-color: green;
+  color: black;
+  background-color: aqua;
   text-align: center;
   cursor: pointer;
-  width: 100%;
   font-size: 18px;
+  font-weight: bolder;
+  border-radius: 8px;
+  margin-bottom: 40px;
 }
 
 button:hover,
