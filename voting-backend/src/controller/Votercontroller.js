@@ -1,40 +1,86 @@
+const ElectionModel = require("../model/election");
 const VoterModel = require("../model/voter");
 const { faker } = require("@faker-js/faker");
 
-const Voter = async (req, res) => {
+const createVoter = async (req, res) => {
   try {
     const newUser = new VoterModel({
-      // name: faker.internet.userName(),
       voterID: faker.string.uuid(), // Use faker.random.uuid() to generate a UUID
     });
-    console.log(newUser);
+    //console.log(newUser);
 
     await newUser.save();
 
-    res.status(201).json(newUser);
+    return res.status(201).json({ success: true, data: newUser });
   } catch (error) {
     console.error("Error creating user:", error); // Log the actual error for debugging
-    res.status(500).json({ error: "An error occurred" });
+    return res.status(500).json({
+      success: false,
+      error: "An error occurred",
+    });
   }
 };
 
-const LoginVoter = async (req, res) => {
-  const { ID } = req.body;
-  const admin = "193bff1b-d87c-4d75-9ccb-38705b18d9fd";
-  console.log("ID", ID);
+const getVoter = async (req, res) => {
+  const { voterid } = req.params;
+  console.log(voterid);
   try {
-    const CheckID = await VoterModel.findOne({ voterID: ID });
-    if (CheckID) {
-      res.status(400).json({ msg: "Invlid Voter ID" });
+    const voter = await VoterModel.findOne({ voterID: voterid });
+    if (!voter._id) {
+      return res.status(404).json({ success: false, error: "invalid id" });
     }
-    if (admin === ID) {
-      return res.status(200).json({ isAdmin: true, CheckID });
-    }
-    return res.status(201).json(CheckID);
+    return res.status(200).json({ success: true, data: voter });
   } catch (error) {
-    console.error("Error creating user:", error); // Log the actual error for debugging
-    res.status(500).json({ error: "An error occurred" });
+    console.log("get voter err", error);
+    return res.status(500).json({
+      success: false,
+      error: "An error occurred",
+    });
   }
 };
 
-module.exports = { Voter, LoginVoter };
+const postVote = async (req, res) => {
+  try {
+    const { voterId, candidateId, electionId } = req.body;
+    console.log("postid", voterId, candidateId, electionId);
+    const voter = await VoterModel.findOne({ voterID: voterId });
+    if (!voter) {
+      return res.status(404).json({ error: "Voter not found" });
+    }
+
+    const hasVotedInThisElection = voter.votes.some(
+      (v) => v.election.toString() === electionId
+    );
+
+    if (hasVotedInThisElection) {
+      return res.status(400).json({ error: "Already voted in this election" });
+    }
+
+    const election = await ElectionModel.findById(electionId);
+    if (!election) {
+      return res.status(404).json({ error: "Election not found" });
+    }
+
+    const candidate = election.candidates.find(
+      (candidate) => candidate._id.toString() === candidateId
+    );
+    if (!candidate) {
+      return res
+        .status(404)
+        .json({ error: "Candidate not found for given election id" });
+    }
+
+    voter.votes.push({
+      election: election,
+      candidate: candidate,
+    });
+
+    await voter.save();
+
+    res.status(200).json({ message: "Vote cast successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to cast vote" });
+  }
+};
+
+module.exports = { createVoter, getVoter, postVote };

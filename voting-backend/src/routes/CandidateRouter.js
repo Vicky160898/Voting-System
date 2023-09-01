@@ -1,14 +1,13 @@
 const express = require("express");
 const {
-  GetResult,
-  PostVote,
-  GetCandidate,
-} = require("../controller/VotedController");
+  getCandidate,
+  addCandidateToElection,
+} = require("../controller/Candidatecontroller");
 
 const router = express.Router();
 
-router.get("/generate", GetCandidate);
-router.post("/vote/:voterId/:candidateId", PostVote);
-router.get("/results", GetResult);
+router.get("/generate", getCandidate);
+
+router.post("/add", addCandidateToElection);
 
 module.exports = router;

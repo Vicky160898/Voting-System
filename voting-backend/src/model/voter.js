@@ -1,16 +1,15 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
 
-const VoterSchema = new Schema(
-  {
-    voterID: { type: String, required: true },
-    votedCandidate: { type: Schema.Types.ObjectId, ref: "Candidate" },
-  },
-  {
-    timestamps: true, // Adding createdAt and updatedAt fields
-    versionKey: false, // Disabling versioning
-  }
-);
+// Voter Schema
+const VoterSchema = new mongoose.Schema({
+  voterID: { type: String, required: true },
+  votes: [
+    {
+      election: { type: mongoose.Schema.Types.ObjectId, ref: "Election" },
+      candidate: { type: mongoose.Schema.Types.ObjectId, ref: "Candidate" },
+    },
+  ],
+});
 
-const VoterModel = model("Voter", VoterSchema);
-
+const VoterModel = mongoose.model("Voter", VoterSchema);
 module.exports = VoterModel;

@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 
-const electionSchema = new mongoose.Schema({
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
+// Election Schema
+const ElectionSchema = new mongoose.Schema({
+  startTime: { type: Date },
+  endTime: { type: Date },
   candidates: [{ type: mongoose.Schema.Types.ObjectId, ref: "Candidate" }],
 });
 
-const ElectionModel = mongoose.model("Election", electionSchema);
+const ElectionModel = mongoose.model("Election", ElectionSchema);
 module.exports = ElectionModel;

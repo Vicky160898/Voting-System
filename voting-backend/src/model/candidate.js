@@ -1,11 +1,12 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, default: mongoose } = require("mongoose");
 
-const candidateSchema = new Schema({
-  name: { type: String, required: true },
-  id: { type: String, required: true },
+// Candidate Schema
+const CandidateSchema = new Schema({
+  name: { type: String },
+  party: { type: String },
   avatar: { type: String },
-  votes: { type: Number, default: 0 },
+  election: { type: mongoose.Schema.Types.ObjectId, ref: "Election" },
 });
 
-const CandidateModel = model("Candidate", candidateSchema);
+const CandidateModel = model("Candidate", CandidateSchema);
 module.exports = CandidateModel;
