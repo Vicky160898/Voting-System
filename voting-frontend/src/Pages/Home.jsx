@@ -6,9 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { useVoterAuth } from "../components/store/VoterAuthContext";
 function Home() {
   const [data, setData] = useState([]);
-  const [remainingTime, setRemainingTime] = useState(null);
-  const { voterId, voterHasVoted, markVoterAsVoted } = useVoterAuth();
-  console.log(voterId);
+  const { voterId } = useVoterAuth();
   const handleVote = async (electionId, candidateId) => {
     try {
       const response = await axios.post("http://localhost:8080/api/vote", {
@@ -16,21 +14,17 @@ function Home() {
         candidateId,
         electionId,
       });
-      console.log("vote", response);
-
       if (response.status === 200) {
-        Toast(data.message); // Display success toast
+        Toast("Vote cast successfully.");
       } else {
-        Toast(data.error); // Display error toast
+        Toast(data.error);
       }
     } catch (error) {
-      console.error("Error casting vote:", error);
-      Toast("Failed to cast vote");
+      Toast("Failed to cast vote!");
     }
   };
 
   useEffect(() => {
-    console.log("Fetching election data...");
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -50,7 +44,6 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log("Updating remaining time...");
     const interval = setInterval(() => {
       setData((prevData) =>
         prevData.map((election) => ({
@@ -77,7 +70,15 @@ function Home() {
 
     return `${hours}h ${minutes}m ${seconds}s`;
   };
-  console.log("Rendering component...");
+
+  const getStatusMessage = (remainingTime) => {
+    if (remainingTime <= 0) {
+      return "Election Ended See Result On Dashboard";
+    } else {
+      return `Election Time Remaining: ${formatRemainingTime(remainingTime)}`;
+    }
+  };
+
   return (
     <>
       <h1 style={{ textAlign: "center", margin: "20px 0px 0px 0px" }}>
@@ -87,9 +88,10 @@ function Home() {
         style={{
           display: "flex",
           flexWrap: "wrap",
+          marginBottom: "50px",
         }}
       >
-        {data &&
+        {data.length > 0 ? (
           data?.map((el) => (
             <div
               className={style.card}
@@ -113,10 +115,7 @@ function Home() {
               >
                 {el.remainingTime !== undefined && (
                   <div>
-                    <h2>
-                      Election Time Remaining:{" "}
-                      {formatRemainingTime(el.remainingTime)}
-                    </h2>
+                    <h2>{getStatusMessage(el.remainingTime)}</h2>
                   </div>
                 )}
               </div>
@@ -155,7 +154,12 @@ function Home() {
                 ))}
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <h1 style={{ textAlign: "center", margin: "100px auto auto auto" }}>
+            Election Not Found
+          </h1>
+        )}
       </div>
       <ToastContainer />
     </>

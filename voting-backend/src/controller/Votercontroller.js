@@ -7,13 +7,10 @@ const createVoter = async (req, res) => {
     const newUser = new VoterModel({
       voterID: faker.string.uuid(), // Use faker.random.uuid() to generate a UUID
     });
-    //console.log(newUser);
-
     await newUser.save();
 
     return res.status(201).json({ success: true, data: newUser });
   } catch (error) {
-    console.error("Error creating user:", error); // Log the actual error for debugging
     return res.status(500).json({
       success: false,
       error: "An error occurred",
@@ -23,7 +20,7 @@ const createVoter = async (req, res) => {
 
 const getVoter = async (req, res) => {
   const { voterid } = req.params;
-  console.log(voterid);
+
   try {
     const voter = await VoterModel.findOne({ voterID: voterid });
     if (!voter._id) {
@@ -31,7 +28,6 @@ const getVoter = async (req, res) => {
     }
     return res.status(200).json({ success: true, data: voter });
   } catch (error) {
-    console.log("get voter err", error);
     return res.status(500).json({
       success: false,
       error: "An error occurred",
@@ -42,7 +38,7 @@ const getVoter = async (req, res) => {
 const postVote = async (req, res) => {
   try {
     const { voterId, candidateId, electionId } = req.body;
-    console.log("postid", voterId, candidateId, electionId);
+
     const voter = await VoterModel.findOne({ voterID: voterId });
     if (!voter) {
       return res.status(404).json({ error: "Voter not found" });

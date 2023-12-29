@@ -6,27 +6,37 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useVoterAuth } from "../components/store/VoterAuthContext";
 function Login() {
-  const { authenticateVoter, voterId } = useVoterAuth();
+  const { authenticateVoter, markVoterAsLogin, markAdminAsLogin } =
+    useVoterAuth();
   const [voterid, setID] = useState("");
   const navigate = useNavigate();
   const Loginhandler = async () => {
     const response = await axios.post(`http://localhost:8080/api/login`, {
       ID: voterid,
     });
-    console.log("res", response);
-    authenticateVoter(response.data.data.voterID);
+
+    authenticateVoter(response.data.data?.voterID);
+    markVoterAsLogin(true);
+    Toast("Login Successful");
+    setTimeout(() => {
+      navigate("/home");
+    }, 3000);
+    return;
+  };
+
+  const AdminLoginhandler = async () => {
+    const response = await axios.post(`http://localhost:8080/api/login`, {
+      ID: "admin@1234",
+    });
+
+    authenticateVoter(response.data?.voterID);
+    markVoterAsLogin(true);
     if (response.data.isAdmin) {
-      localStorage.setItem("isAdmin", true);
+      markAdminAsLogin(response.data.isAdmin);
       Toast("Admin login Successfully");
       setTimeout(() => {
         navigate("/dashboard");
       }, 3000);
-      Toast("Login Successful");
-    } else {
-      setTimeout(() => {
-        navigate("/home");
-      }, 3000);
-      Toast("Login Successful");
     }
   };
 
@@ -34,6 +44,7 @@ function Login() {
     const response = await axios.get("http://localhost:8080/api/create");
     setID(response.data.data.voterID);
     Toast("Voter ID Generated Successfully");
+    return;
   };
 
   return (
@@ -61,6 +72,9 @@ function Login() {
           </button>
           <button className={style.btn} onClick={Loginhandler}>
             Log in
+          </button>
+          <button className={style.btn} onClick={AdminLoginhandler}>
+            Admin Log in
           </button>
         </div>
       </div>

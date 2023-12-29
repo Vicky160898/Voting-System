@@ -15,12 +15,10 @@ const CandidateGenerator = () => {
   const navigate = useNavigate();
   const generateCandidates = async () => {
     const res = await axios.get("http://localhost:8080/api/candidate/generate");
-    console.log("res", res.data.data);
     setCandidates([...candidates, ...res.data.data]);
   };
 
   const handleCandidateSelection = async (candidateId) => {
-    console.log(candidateId);
     if (selectedCandidates.includes(candidateId)) {
       setSelectedCandidates(
         selectedCandidates.filter((id) => id !== candidateId)
@@ -38,7 +36,6 @@ const CandidateGenerator = () => {
       return;
     }
     try {
-      console.log(startTime, endTime, selectedCandidates);
       const response = await axios.post(
         "http://localhost:8080/api/election/start",
         {
@@ -61,26 +58,6 @@ const CandidateGenerator = () => {
   };
 
   const today = new Date();
-
-  // useEffect(() => {
-  //   if (startDate && endDate) {
-  //     const timeDifference = endDate.getTime() - startDate.getTime();
-  //     setRemainingTime(timeDifference);
-  //     const interval = setInterval(() => {
-  //       setRemainingTime((prevTime) => prevTime - 1000);
-  //     }, 1000);
-
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [startDate, endDate]);
-
-  // const formatRemainingTime = (milliseconds) => {
-  //   const seconds = Math.floor(milliseconds / 1000) % 60;
-  //   const minutes = Math.floor(milliseconds / 1000 / 60) % 60;
-  //   const hours = Math.floor(milliseconds / 1000 / 60 / 60);
-
-  //   return `${hours}h ${minutes}m ${seconds}s`;
-  // };
 
   return (
     <>

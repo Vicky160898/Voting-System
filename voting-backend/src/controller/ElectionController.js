@@ -66,14 +66,10 @@ const getAllResults = async (req, res) => {
 
       results.push({ id: election._id, ...electionResult });
     }
-
-    // Move the console.log outside of the loop
-    console.log("name", results);
-
     // Return the results in the response
     return res.status(200).json({ success: true, data: results });
   } catch (error) {
-    console.error("Internal error:", error);
+   
     res.status(500).json({ error: "internal error" });
   }
 };

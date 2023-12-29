@@ -6,25 +6,36 @@ const VoterAuthContext = createContext();
 // Create a provider component
 export const VoterAuthProvider = ({ children }) => {
   const [voterId, setVoterId] = useState(null);
-  const [voterHasVoted, setVoterHasVoted] = useState(false);
+  const [voterHasLogin, setVoterHasLogin] = useState(false);
+  const [adminHasLogin, setAdminHasLogin] = useState(false);
 
   // Function to authenticate the voter
   const authenticateVoter = (id) => {
-   
     setVoterId(id);
     // You can also fetch the voter's voting status here and set `voterHasVoted`
   };
 
   // Function to mark the voter as voted
-  const markVoterAsVoted = () => {
-    setVoterHasVoted(true);
+  const markVoterAsLogin = () => {
+    setVoterHasLogin(!voterHasLogin);
   };
 
+  // Function to mark the Admin
+  const markAdminAsLogin = (data) => {
+    setAdminHasLogin(data);
+  };
 
   // Provide the context values to children components
   return (
     <VoterAuthContext.Provider
-      value={{ voterId, voterHasVoted, authenticateVoter, markVoterAsVoted }}
+      value={{
+        voterId,
+        voterHasLogin,
+        authenticateVoter,
+        markVoterAsLogin,
+        adminHasLogin,
+        markAdminAsLogin,
+      }}
     >
       {children}
     </VoterAuthContext.Provider>

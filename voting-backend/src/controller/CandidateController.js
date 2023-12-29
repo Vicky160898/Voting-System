@@ -13,7 +13,6 @@ const getCandidate = async (req, res) => {
 
     return res.status(201).json({ success: true, data: candidates });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: "An error occurred" });
   }
 };
@@ -23,13 +22,11 @@ const addCandidateToElection = async (req, res) => {
   try {
     const { candidateId, electionId } = req.body;
     const candidate = await CandidateModel.findById({ _id: candidateId });
-    //console.log("candidate", candidate);
+
     let election = await ElectionModel.findById(electionId);
 
     if (!election) {
       election = await ElectionModel.create({ candidates: [candidate] });
-
-      //console.log(election);
 
       return res.status(201).json({ success: true, data: candidate });
     } else {

@@ -3,19 +3,37 @@ const VoterModel = require("../model/voter");
 const LoginVoter = async (req, res) => {
   const { ID } = req.body;
 
-  console.log("DATA received on Login ", JSON.stringify(req.body));
-
   const admin = "admin@1234";
 
   if (admin === ID) {
-    return res.status(200).json({ isAdmin: true });
+    // Check if admin ID already exists in the database
+    const adminExists = await VoterModel.exists({ voterID: ID });
+
+    if (adminExists) {
+      return res.status(201).json({
+        isAdmin: true,
+        voterID: ID,
+        message: "Vote cast successfully",
+      });
+    } else {
+      const newUser = new VoterModel({
+        voterID: ID,
+      });
+
+      await newUser.save();
+      return res.status(201).json({
+        isAdmin: true,
+        voterID: ID,
+        message: "Vote cast successfully",
+      });
+    }
   }
 
   try {
     const voter = await VoterModel.findOne({ voterID: ID });
 
     if (!voter._id) {
-      return res.status(400).json({ msg: "Invlid Voter ID" });
+      return res.status(400).json({ msg: "Invalid Voter ID" });
     }
 
     return res.status(201).json({ success: true, data: voter });

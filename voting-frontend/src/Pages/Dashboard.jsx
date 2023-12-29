@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import style from "../styles/dashboard.module.css";
+import { Toast } from "../utils/toast";
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
 
 function Dashboard() {
   const [Data, setData] = useState([]);
@@ -11,10 +13,10 @@ function Dashboard() {
       if (res.data.success) {
         setData(res.data.data);
       } else {
-        console.log("Something went wrong.");
+        Toast("Something went wrong.");
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      Toast(error);
     }
   };
 
@@ -25,21 +27,28 @@ function Dashboard() {
   return (
     <div style={{ textAlign: "center", margin: "20px" }}>
       <h1>Election Result Dashboard</h1>
-      {Data.map((election, index) => (
-        <div key={index} className={style.card}>
-          <h2 style={{ padding: "8px" }}>Election Result :- {index + 1}</h2>
-          <ul className={style.title}>
-            {Object.entries(election).map(
-              ([candidateName, voteCount]) =>
-                candidateName !== "id" && (
-                  <li key={candidateName} className={style.resultItem}>
-                    {candidateName}: {voteCount} Votes
-                  </li>
-                )
-            )}
-          </ul>
-        </div>
-      ))}
+      {Data.length > 0 ? (
+        Data.map((election, index) => (
+          <div key={index} className={style.card}>
+            <h2 style={{ padding: "8px" }}>Election Result :- {index + 1}</h2>
+            <ul className={style.title}>
+              {Object.entries(election).map(
+                ([candidateName, voteCount]) =>
+                  candidateName !== "id" && (
+                    <li key={candidateName} className={style.resultItem}>
+                      {candidateName}: {voteCount} Votes
+                    </li>
+                  )
+              )}
+            </ul>
+          </div>
+        ))
+      ) : (
+        <h1 style={{ textAlign: "center", margin: "100px auto auto auto" }}>
+          Election Result Not Found
+        </h1>
+      )}
+      <ToastContainer />
     </div>
   );
 }
